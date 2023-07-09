@@ -76,7 +76,9 @@ fun MarkersListScreen(
     onUpdatePreviewClick: () -> Unit,
 ) {
 
-    Box(modifier = Modifier.fillMaxSize().background(Salomie)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Salomie)) {
         if (!isUserSignIn.value) {
             MarkersListSignIn(
                 Modifier
@@ -91,27 +93,29 @@ fun MarkersListScreen(
                     LoadingPlaceHolder()
                 }
 
-                is LoadState.Error -> {}
+                is LoadState.Error -> {
+                    MarkersListEmptyPlaceholder(
+                        Modifier
+                            .padding(horizontal = 16.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        navController.navigateUp()
+                    }
+                }
 
                 else -> {
-                    if (markers.itemSnapshotList.isEmpty()) {
-                        MarkersListEmptyPlaceholder{
-                            navController.navigateUp()
-                        }
-                    } else {
-                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                            items(items = markers) { marker ->
-                                marker?.let {
-                                    when (markerPreviewState.value) {
-                                        MarkersListViewModel.MarkerPreview.SmallPreview -> MarkersListScreenLargeMarkerCard(
-                                            it
-                                        ) {
-                                            navController.navigate(NavDestinationHelper.MarkerDetailsScreen.route + "/${marker.timestamp}")
-                                        }
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(items = markers) { marker ->
+                            marker?.let {
+                                when (markerPreviewState.value) {
+                                    MarkersListViewModel.MarkerPreview.SmallPreview -> MarkersListScreenLargeMarkerCard(
+                                        it
+                                    ) {
+                                        navController.navigate(NavDestinationHelper.MarkerDetailsScreen.route + "/${marker.timestamp}")
+                                    }
 
-                                        else -> MarkersListScreenMarkerCard(it) {
-                                            navController.navigate(NavDestinationHelper.MarkerDetailsScreen.route + "/${marker.timestamp}")
-                                        }
+                                    else -> MarkersListScreenMarkerCard(it) {
+                                        navController.navigate(NavDestinationHelper.MarkerDetailsScreen.route + "/${marker.timestamp}")
                                     }
                                 }
                             }
