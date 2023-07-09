@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "434723607293",
+    "firebase_url": "https://starlit-rain-318710-default-rtdb.firebaseio.com",
+    "project_id": "starlit-rain-318710",
+    "storage_bucket": "starlit-rain-318710.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:434723607293:android:d50fc407c5e54b2871a494",
+        "android_client_info": {
+          "package_name": "com.tabarkevych.places_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "434723607293-t656jnluisr39g7asm93brapqnskmg7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLqnnDZxviUoGoYl2ECCx4X1Lf4FQ6Fyg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "434723607293-t656jnluisr39g7asm93brapqnskmg7q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

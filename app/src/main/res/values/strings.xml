@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Places-App</string>
+
+    <string name="label_done">Done</string>
+
+    <string name="title_map">Map</string>
+    <string name="title_markers">Markers</string>
+
+    <string name="markers_list_sing_in_title">Sign in to view saved POIs</string>
+    <string name="markers_list_sing_in">Sign in</string>
+    <string name="markers_list_empty">You don\'t have POIs saved yet</string>
+    <string name="markers_list_add_poi">Add new poi</string>
+
 </resources>
