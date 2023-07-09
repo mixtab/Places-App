@@ -1,0 +1,25 @@
+## Description
+
+This repository contains application implementation using Compose, MVVM, Clean Architecture, Hilt, Firebase Realtime Database, Firebase Authentication
+
+
+
+## To run it
+
+1. Get a [Maps API key][api-key]
+1. Create a file in the root directory named `local.properties` with a single line that looks like this, replacing YOUR_KEY with the key from step 1: `GOOGLE_API_KEY=YOUR_KEY`
+1. Build and run
+
+
+
+## Functionality
+
+Main Screen contains Google Map and "Current Location" button.
+By clicking on "Current Location" moves the map to the user's location.
+A long press on the map shows Firebase Authentication. After successful authorization, a new screen is displayed where the user can add a picture, name, description and save the location.
+The saved locations are then displayed on the map by placing markers on the corresponding locations.
+If user clicks on marker it redirect him to screen with details for this location. These details can be edited and updated. Also selected location can be deleted.
+This data is stored in the Firebase Realtime database.
+The program contains a screen where all the saved places are shown in the form of a list.
+The user has the option to change the appearance of this list by clicking the button in the lower left corner
+List screen have pagination with 10 items per page.
