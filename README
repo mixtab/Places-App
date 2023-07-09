@@ -7,8 +7,8 @@ This repository contains application implementation using Compose, MVVM, Clean A
 ## To run it
 
 1. Get a [Maps API key][api-key]
-1. Create a file in the root directory named `local.properties` with a single line that looks like this, replacing YOUR_KEY with the key from step 1: `GOOGLE_API_KEY=YOUR_KEY`
-1. Build and run
+2. Create a file in the root directory named `local.properties` with a single line that looks like this, replacing YOUR_KEY with the key from step 1: `GOOGLE_API_KEY=YOUR_KEY`
+3. Build and run
 
 
 
