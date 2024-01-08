@@ -9,7 +9,7 @@ fun Marker.toUi() =
         timestamp = timestamp?:0,
         latitude = latitude?:"",
         longitude  = longitude?:"",
-        image = image?:"",
+        images = images?: listOf(""),
         title = title?:"",
         description = description?:""
     )
@@ -21,7 +21,7 @@ fun MarkerUi.toDomain() =
         timestamp = timestamp,
         latitude = latitude,
         longitude  = longitude,
-        image = image,
+        images = images,
         title = title,
         description = description
     )

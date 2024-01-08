@@ -25,18 +25,21 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.R
+import com.tabarkevych.places_app.extensions.activityViewModel
 import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.model.MarkerUi
-import com.tabarkevych.places_app.presentation.navigation.NavDestinationHelper
+import com.tabarkevych.places_app.presentation.navigation.NavRouteDestination
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
 import com.tabarkevych.places_app.presentation.theme.Salomie
 import com.tabarkevych.places_app.presentation.ui.markers_list.components.MarkersListEmptyPlaceholder
 import com.tabarkevych.places_app.presentation.ui.markers_list.components.MarkersListScreenLargeMarkerCard
 import com.tabarkevych.places_app.presentation.ui.markers_list.components.MarkersListScreenMarkerCard
 import com.tabarkevych.places_app.presentation.ui.markers_list.components.MarkersListSignIn
-import com.tabarkevych.places_app.presentation.ui.root.components.LoadingPlaceHolder
-import com.tabarkevych.places_app.presentation.ui.root.components.PrimaryFloatingActionButton
+import com.tabarkevych.places_app.presentation.ui.base.components.LoadingPlaceHolder
+import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryFloatingActionButton
+import com.tabarkevych.places_app.presentation.ui.map.MapViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
@@ -44,7 +47,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun MarkersListScreenRoute(
     navController: NavController,
     onShowSignIn: () -> Unit,
-    viewModel: MarkersListViewModel = hiltViewModel()
+    viewModel: MarkersListViewModel = hiltViewModel(),
+    mapViewModel: MapViewModel = activityViewModel()
 ) {
     val markers: LazyPagingItems<MarkerUi> = viewModel.markersState.collectAsLazyPagingItems()
 
@@ -62,7 +66,11 @@ fun MarkersListScreenRoute(
         },
         onUpdatePreviewClick = {
             viewModel.updateMarkersPreview()
-        })
+        },
+        onBuildRouteClick = {
+            mapViewModel.createRouteToLocation(it)
+        }
+    )
 }
 
 
@@ -74,11 +82,14 @@ fun MarkersListScreen(
     navController: NavController,
     onSignInClick: () -> Unit,
     onUpdatePreviewClick: () -> Unit,
+    onBuildRouteClick: (LatLng) -> Unit
 ) {
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Salomie)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Salomie)
+    ) {
         if (!isUserSignIn.value) {
             MarkersListSignIn(
                 Modifier
@@ -106,17 +117,33 @@ fun MarkersListScreen(
                 else -> {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(items = markers) { marker ->
-                            marker?.let {
+                            marker?.let { it ->
                                 when (markerPreviewState.value) {
                                     MarkersListViewModel.MarkerPreview.SmallPreview -> MarkersListScreenLargeMarkerCard(
-                                        it
-                                    ) {
-                                        navController.navigate(NavDestinationHelper.MarkerDetailsScreen.route + "/${marker.timestamp}")
-                                    }
+                                        it,
+                                        onMarkerClick = {
+                                            navController.navigate(NavRouteDestination.MarkerDetailsScreen.route + "/${marker.timestamp}")
+                                        },
+                                        onBuildRouteCLick = {
+                                            onBuildRouteClick.invoke(it)
+                                            navController.popBackStack(
+                                                NavRouteDestination.MapScreen.route,
+                                                false
+                                            )
+                                        }
+                                    )
 
-                                    else -> MarkersListScreenMarkerCard(it) {
-                                        navController.navigate(NavDestinationHelper.MarkerDetailsScreen.route + "/${marker.timestamp}")
-                                    }
+                                    else -> MarkersListScreenMarkerCard(it,
+                                        onMarkerClick = {
+                                            navController.navigate(NavRouteDestination.MarkerDetailsScreen.route + "/${marker.timestamp}")
+                                        },
+                                        onBuildRouteCLick = {
+                                            onBuildRouteClick.invoke(it)
+                                            navController.popBackStack(
+                                                NavRouteDestination.MapScreen.route,
+                                                false
+                                            )
+                                        })
                                 }
                             }
                         }
@@ -159,7 +186,9 @@ private fun LoadingPlaceHolderPreview() {
             remember { mutableStateOf(false) },
             rememberNavController(),
             {},
-            {})
+            {},
+            {}
+        )
     }
 }
 

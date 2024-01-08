@@ -19,28 +19,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.R
 import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.model.MarkerUi
 import com.tabarkevych.places_app.presentation.theme.Mirage
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
+import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryButton
 
 @Composable
 fun MarkersListScreenMarkerCard(
     marker: MarkerUi,
-    onMarkerClick: (Long) -> Unit
+    onMarkerClick: (Long) -> Unit,
+    onBuildRouteCLick:(LatLng) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
-            .padding(horizontal = 42.dp)
+            .padding(horizontal = 16.dp)
             .clickable {
                 onMarkerClick(marker.timestamp)
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ProductImage(marker.image)
+        ProductImage(marker.images.first())
         Column(
             Modifier
                 .padding(horizontal = 16.dp)
@@ -66,6 +69,10 @@ fun MarkersListScreenMarkerCard(
                 color = Mirage
             )
         }
+
+        PrimaryButton( modifier = Modifier.align(Alignment.Bottom),"Build route"){
+            onBuildRouteCLick.invoke(LatLng(marker.latitude.toDouble(),marker.longitude.toDouble()))
+        }
     }
     Divider(color = Mirage)
 }
@@ -78,6 +85,7 @@ private fun ProductImage(url: String, modifier: Modifier = Modifier) {
         imageLoader = ImageLoader.Builder(LocalContext.current)
             .placeholder(R.drawable.ic_markers_place_holder)
             .crossfade(true)
+            .respectCacheHeaders(false)
             .build(),
         modifier = modifier.size(80.dp)
     )
@@ -94,8 +102,8 @@ private fun ProductPreview() {
                 description = "Тест",
                 latitude = "asdadsa",
                 longitude = "asdasdasdas",
-                image = "",
-            ),{}
+                images = listOf(""),
+            ),{},{}
         )
     }
 }

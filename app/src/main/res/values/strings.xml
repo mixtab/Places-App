@@ -5,10 +5,14 @@
 
     <string name="title_map">Map</string>
     <string name="title_markers">Markers</string>
+    <string name="title_settings">Settings</string>
 
     <string name="markers_list_sing_in_title">Sign in to view saved POIs</string>
     <string name="markers_list_sing_in">Sign in</string>
     <string name="markers_list_empty">You don\'t have POIs saved yet</string>
     <string name="markers_list_add_poi">Add new poi</string>
+
+    <string name="marker_details_build_route">Build a route</string>
+
 
 </resources>

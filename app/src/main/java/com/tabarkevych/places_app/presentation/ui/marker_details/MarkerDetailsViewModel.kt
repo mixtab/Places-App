@@ -45,7 +45,7 @@ class MarkerDetailsViewModel @Inject constructor(
         }
     }
 
-    fun updateMarker(image: String, newImageUri: Uri?, title: String, description: String) {
+    fun updateMarker(images: List<String>?, newImageUri: List<Uri>?, title: String, description: String) {
         viewModelScope.launch {
             _markerDetailsState.replayCache.firstOrNull()?.let { marker ->
                 if (newImageUri != null) {
@@ -56,9 +56,9 @@ class MarkerDetailsViewModel @Inject constructor(
                         description
                     )
                 } else {
-                    markersRepository.updateMarker(
+                    markersRepository.addMarker(
                         marker.copy(
-                            image = image,
+                            images = images?: listOf(),
                             title = title,
                             description = description
                         ).toDomain()

@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.presentation.ui.root.components
+package com.tabarkevych.places_app.presentation.ui.base.components
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
@@ -21,7 +21,7 @@ import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.theme.BayLeaf
 import com.tabarkevych.places_app.presentation.theme.Mirage
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
-import com.tabarkevych.places_app.presentation.ui.root.BottomNavigationType
+import com.tabarkevych.places_app.presentation.ui.base.BottomNavigationType
 
 @Composable
 fun BottomBar(navController: NavHostController) {

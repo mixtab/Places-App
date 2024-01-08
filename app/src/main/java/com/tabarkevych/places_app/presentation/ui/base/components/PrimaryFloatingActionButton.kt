@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.presentation.ui.root.components
+package com.tabarkevych.places_app.presentation.ui.base.components
 
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon

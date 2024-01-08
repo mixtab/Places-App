@@ -7,26 +7,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
+import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.R
 import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.model.MarkerUi
 import com.tabarkevych.places_app.presentation.theme.Mirage
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
+import com.tabarkevych.places_app.presentation.theme.PurpleGrey40
+import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryButton
 
 @Composable
 fun MarkersListScreenLargeMarkerCard(
     marker: MarkerUi,
-    onMarkerClick: (Long) -> Unit
+    onMarkerClick: (Long) -> Unit,
+    onBuildRouteCLick:(LatLng) -> Unit
 ) {
     Column(modifier = Modifier.wrapContentSize()) {
         Column(
@@ -35,9 +44,9 @@ fun MarkersListScreenLargeMarkerCard(
                 .padding(horizontal = 16.dp)
                 .clickable { onMarkerClick(marker.timestamp) }
         ) {
-            MarkerImage(marker.image)
+            MarkerImage(marker.images.firstOrNull() ?: "")
             Text(
-                text =  "Title: ${marker.title}",
+                text = "Title: ${marker.title}",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 color = Mirage
@@ -55,6 +64,10 @@ fun MarkersListScreenLargeMarkerCard(
                 fontSize = 10.sp,
                 color = Mirage
             )
+            PrimaryButton( modifier = Modifier.padding(top = 10.dp),"Build route"){
+                onBuildRouteCLick.invoke(LatLng(marker.latitude.toDouble(),marker.longitude.toDouble()))
+            }
+
         }
         Spacer(modifier = Modifier.height(10.dp))
         Divider(color = Mirage)
@@ -69,8 +82,12 @@ private fun MarkerImage(url: String, modifier: Modifier = Modifier) {
         imageLoader = ImageLoader.Builder(LocalContext.current)
             .placeholder(R.drawable.ic_markers_place_holder)
             .crossfade(true)
+            .respectCacheHeaders(false)
             .build(),
-        modifier = modifier.fillMaxWidth().height(300.dp).padding(24.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .padding(24.dp)
     )
 }
 
@@ -85,8 +102,8 @@ private fun MarkerPreview() {
                 description = "Тест",
                 latitude = "asdadsa",
                 longitude = "asdasdasdas",
-                image = "",
-            ),{}
+                images = listOf(""),
+            ),{},{}
         )
     }
 }

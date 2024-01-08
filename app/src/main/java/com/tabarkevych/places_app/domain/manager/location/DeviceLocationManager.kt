@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.domain.location
+package com.tabarkevych.places_app.domain.manager.location
 
 import android.annotation.SuppressLint
 import android.content.Context

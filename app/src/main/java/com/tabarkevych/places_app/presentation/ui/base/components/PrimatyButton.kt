@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.presentation.ui.root.components
+package com.tabarkevych.places_app.presentation.ui.base.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +17,6 @@ fun PrimaryButton(
     text:String,
     onClick: () -> Unit
 ) {
-    Box {
         Button(
             modifier = modifier,
             shape = RoundedCornerShape(8),
@@ -28,7 +27,6 @@ fun PrimaryButton(
         ) {
            Text(text = text)
         }
-    }
 }
 
 @DevicePreviews

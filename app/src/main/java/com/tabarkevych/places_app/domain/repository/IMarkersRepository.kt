@@ -17,13 +17,11 @@ interface IMarkersRepository {
 
     suspend fun addMarker(marker: Marker)
 
-    suspend fun updateMarker(marker: Marker)
-
     suspend fun deleteMarker(markerId: Long)
 
     suspend fun uploadImageWithMarker(
         timestamp: Long,
-        imageUri: Uri,
+        imagesUri: List<Uri>?,
         latLng: LatLng,
         title: String,
         description: String

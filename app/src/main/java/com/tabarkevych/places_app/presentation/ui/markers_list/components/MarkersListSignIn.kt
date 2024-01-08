@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.tabarkevych.places_app.R
 import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
-import com.tabarkevych.places_app.presentation.ui.root.components.PrimaryButton
+import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryButton
 
 @Composable
 fun MarkersListSignIn(

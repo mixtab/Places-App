@@ -14,6 +14,7 @@ import com.tabarkevych.places_app.data.paging.MarkersPagingSource
 import com.tabarkevych.places_app.data.mapper.toMarker
 import com.tabarkevych.places_app.domain.base.Result
 import com.tabarkevych.places_app.domain.model.Marker
+import com.tabarkevych.places_app.domain.model.SaveMarker
 import com.tabarkevych.places_app.domain.repository.IAuthRepository
 import com.tabarkevych.places_app.domain.repository.IMarkersRepository
 import com.tabarkevych.places_app.extensions.executeSafeWithResult
@@ -21,6 +22,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
@@ -39,7 +41,9 @@ class FirebaseMarkersRepository @Inject constructor(
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     trySend(
-                        executeSafeWithResult { Result.Success(snapshot.children.map { it.toMarker() }) }
+                        executeSafeWithResult {
+                            Result.Success(snapshot.children.map { it.toMarker() })
+                        }
                     )
                 }
 
@@ -74,6 +78,7 @@ class FirebaseMarkersRepository @Inject constructor(
         return callbackFlow {
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+
                     trySend(snapshot.toMarker())
                 }
 
@@ -92,51 +97,72 @@ class FirebaseMarkersRepository @Inject constructor(
     override suspend fun addMarker(marker: Marker) {
         val userId = authRepository.getUserId().toString()
         fireDatabase.child(userId).child(CHILD_MARKERS).child(marker.timestamp.toString())
-            .setValue(marker)
+            .setValue(
+                SaveMarker(
+                    marker.timestamp,
+                    marker.latitude,
+                    marker.longitude,
+                    title = marker.title,
+                    description = marker.description
+                )
+            )
+
+
+        fireDatabase.child(userId).child(CHILD_MARKERS).child(marker.timestamp.toString())
+            .child(CHILD_MARKERS_PHOTOS).setValue(marker.images)
+
     }
 
-    override suspend fun updateMarker(marker: Marker) {
-        val userId = authRepository.getUserId().toString()
-        fireDatabase.child(userId).child(CHILD_MARKERS).child(marker.timestamp.toString())
-            .setValue(marker)
-    }
 
     override suspend fun deleteMarker(markerId: Long) {
         val userId = authRepository.getUserId().toString()
         fireDatabase.child(userId).child(CHILD_MARKERS).child(markerId.toString()).removeValue()
+
+        val storageRef =
+            fireStorage.getReference(CHILD_MARKERS + "/" + authRepository.getUserId() + "/" + markerId)
+        storageRef.listAll().addOnSuccessListener { listResult ->
+            listResult.items.forEach { item ->
+                item.delete()
+            }
+        }.await()
     }
 
     override suspend fun uploadImageWithMarker(
-        timestamp:Long,
-        imageUri: Uri,
+        timestamp: Long,
+        imagesUri: List<Uri>?,
         latLng: LatLng,
         title: String,
         description: String
     ) {
-        val imageRef =
-            fireStorage.getReference(CHILD_MARKERS + "/" + authRepository.getUserId() + "/" + System.currentTimeMillis())
-        imageRef.putFile(imageUri).addOnSuccessListener {
+        val listOfUris = mutableListOf<String>()
+
+        imagesUri?.forEach { imageUri ->
+            val imageRef =
+                fireStorage.getReference(CHILD_MARKERS + "/" + authRepository.getUserId() + "/" + timestamp + "/" + System.currentTimeMillis())
+            imageRef.putFile(imageUri).await()
+
             imageRef.downloadUrl.addOnSuccessListener { uri ->
-                runBlocking {
-                    val test = uri.toString()
-                    addMarker(
-                        Marker(
-                            timestamp,
-                            latLng.latitude.toString(),
-                            latLng.longitude.toString(),
-                            test,
-                            title,
-                            description
-                        )
-                    )
-                }
-            }
+                listOfUris.add(uri.toString())
+            }.await()
         }
+
+
+        addMarker(
+            Marker(
+                timestamp,
+                latLng.latitude.toString(),
+                latLng.longitude.toString(),
+                listOfUris,
+                title,
+                description
+            )
+        )
     }
 
     companion object {
 
         const val CHILD_MARKERS = "markers"
+        const val CHILD_MARKERS_PHOTOS = "marker_photos"
     }
 
 

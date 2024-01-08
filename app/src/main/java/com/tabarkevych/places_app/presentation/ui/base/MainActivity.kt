@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.presentation.ui.root
+package com.tabarkevych.places_app.presentation.ui.base
 
 import android.app.Activity
 import android.os.Bundle
@@ -11,12 +11,12 @@ import androidx.compose.runtime.SideEffect
 import androidx.navigation.compose.rememberNavController
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.tabarkevych.places_app.presentation.navigation.NavDestinationHelper
+import com.tabarkevych.places_app.presentation.navigation.NavRouteDestination
 import com.tabarkevych.places_app.presentation.theme.BayLeaf
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
-import com.tabarkevych.places_app.presentation.ui.root.components.PlacesAppNavHost
-import com.tabarkevych.places_app.presentation.ui.root.components.BottomBar
-import com.tabarkevych.places_app.presentation.ui.root.components.HandleActivityEvent
+import com.tabarkevych.places_app.presentation.ui.base.components.PlacesAppNavHost
+import com.tabarkevych.places_app.presentation.ui.base.components.BottomBar
+import com.tabarkevych.places_app.presentation.ui.base.components.HandleActivityEvent
 import com.tabarkevych.places_app.presentation.ui.sign_in.GoogleAuthUiClient
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
 
                     PlacesAppNavHost(
                         navController = navController,
-                        startDestination = NavDestinationHelper.MapScreen.route,
+                        startDestination = NavRouteDestination.MapScreen.route,
                         padding
                     ) { event ->
 

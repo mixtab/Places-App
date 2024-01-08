@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.presentation.ui.map
+package com.tabarkevych.places_app.presentation.ui.map.components
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -32,26 +32,26 @@ import coil.compose.AsyncImage
 import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.R
 import com.tabarkevych.places_app.presentation.theme.Salomie
-import com.tabarkevych.places_app.presentation.ui.root.components.PrimaryButton
+import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryButton
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMarkerDialog(
     openDialogCustom: MutableState<LatLng?>,
-    onPhotoAdded: (Uri?, String, String) -> Unit
+    onPhotoAdded: (List<Uri>?, String, String) -> Unit
 ) {
 
     var textTitle by rememberSaveable { mutableStateOf("") }
     var textDescription by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
-    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse("android.resource://" + context.packageName + "/" + R.drawable.ic_add_image)) }
+    var imageUri by remember { mutableStateOf<List<Uri>>(listOf( Uri.parse("android.resource://" + context.packageName + "/" + R.drawable.ic_add_image))) }
     var isImageAdded by rememberSaveable { mutableStateOf(false) }
 
     val pickMedia = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
+        ActivityResultContracts.PickMultipleVisualMedia(5)
     ) { uri ->
-        if (uri != null) {
+        if (uri.isNotEmpty()) {
             isImageAdded = true
             imageUri = uri
         }
@@ -73,7 +73,7 @@ fun AddMarkerDialog(
                 )
 
                 AsyncImage(
-                    model = imageUri,
+                    model = imageUri.first(),
                     modifier = Modifier
                         .padding(top = 35.dp)
                         .height(70.dp)

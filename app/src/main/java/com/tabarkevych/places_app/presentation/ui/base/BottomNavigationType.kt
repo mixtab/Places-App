@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.presentation.ui.root
+package com.tabarkevych.places_app.presentation.ui.base
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

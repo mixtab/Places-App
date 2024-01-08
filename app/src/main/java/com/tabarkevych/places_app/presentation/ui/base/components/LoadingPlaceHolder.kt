@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.presentation.ui.root.components
+package com.tabarkevych.places_app.presentation.ui.base.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
