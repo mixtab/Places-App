@@ -10,9 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,10 +31,12 @@ import com.tabarkevych.places_app.presentation.model.MarkerUi
 import com.tabarkevych.places_app.presentation.theme.Mirage
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
 import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryButton
+import com.tabarkevych.places_app.presentation.ui.settings.TextColorType
 
 @Composable
 fun MarkersListScreenMarkerCard(
     marker: MarkerUi,
+    textColorState: State<Color>,
     onMarkerClick: (Long) -> Unit,
     onBuildRouteCLick:(LatLng) -> Unit
 ) {
@@ -53,20 +60,20 @@ fun MarkersListScreenMarkerCard(
                 text = "Title: ${marker.title}",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = Mirage
+                color = textColorState.value
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Description: ${marker.description}",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = Mirage
+                color = textColorState.value
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "LatLng:${marker.latitude}, ${marker.longitude}",
                 fontSize = 10.sp,
-                color = Mirage
+                color = textColorState.value
             )
         }
 
@@ -74,7 +81,7 @@ fun MarkersListScreenMarkerCard(
             onBuildRouteCLick.invoke(LatLng(marker.latitude.toDouble(),marker.longitude.toDouble()))
         }
     }
-    Divider(color = Mirage)
+    Divider(color = MaterialTheme.colorScheme.primary)
 }
 
 @Composable
@@ -103,7 +110,9 @@ private fun ProductPreview() {
                 latitude = "asdadsa",
                 longitude = "asdasdasdas",
                 images = listOf(""),
-            ),{},{}
+            ), remember {
+                mutableStateOf(Color(TextColorType.MIRAGE.color))
+            },{},{}
         )
     }
 }

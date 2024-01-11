@@ -26,19 +26,19 @@ fun PlacesAppNavHost(
         startDestination = startDestination,
         modifier = androidx.compose.ui.Modifier.padding(paddingValues)
     ) {
-        composable(NavRouteDestination.MapScreen.route) {
+        composable(NavRouteDestination.Map.route) {
             MapScreenRoute(navController = navController, { onEvent(HandleActivityEvent.UserSignIn) })
         }
-        composable(NavRouteDestination.MarkerDetailsScreen.route + "/{markerId}") {
+        composable(NavRouteDestination.MarkerDetails.route + "/{markerId}") {
             MarkerDetailsScreenRoute(navController)
         }
-        composable(NavRouteDestination.MarkersListScreen.route) {
+        composable(NavRouteDestination.MarkersList.route) {
             MarkersListScreenRoute(navController, { onEvent(HandleActivityEvent.UserSignIn) })
         }
-        composable(NavRouteDestination.SettingsScreen.route) {
+        composable(NavRouteDestination.Settings.route) {
             SettingsScreenRoute(navController)
         }
-        composable(NavRouteDestination.SearchScreen.route) {
+        composable(NavRouteDestination.Search.route) {
             SearchScreenRoute(navController)
         }
     }

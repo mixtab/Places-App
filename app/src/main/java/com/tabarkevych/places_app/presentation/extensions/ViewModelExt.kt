@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.extensions
+package com.tabarkevych.places_app.presentation.extensions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider

@@ -7,12 +7,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.SideEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.tabarkevych.places_app.presentation.navigation.NavRouteDestination
-import com.tabarkevych.places_app.presentation.theme.BayLeaf
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
 import com.tabarkevych.places_app.presentation.ui.base.components.PlacesAppNavHost
 import com.tabarkevych.places_app.presentation.ui.base.components.BottomBar
@@ -46,22 +45,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PlacesAppTheme {
-
-                val systemUiController = rememberSystemUiController()
-                SideEffect {
-                    systemUiController.setStatusBarColor(
-                        color = BayLeaf,
-                        darkIcons = false
-                    )
-                }
+            val isDarkMode = viewModel.isDarkMode.collectAsStateWithLifecycle(initialValue = false)
+            PlacesAppTheme (isDarkMode.value){
 
                 val navController = rememberNavController()
                 Scaffold(bottomBar = { BottomBar(navController) }) { padding ->
 
                     PlacesAppNavHost(
                         navController = navController,
-                        startDestination = NavRouteDestination.MapScreen.route,
+                        startDestination = NavRouteDestination.Map.route,
                         padding
                     ) { event ->
 

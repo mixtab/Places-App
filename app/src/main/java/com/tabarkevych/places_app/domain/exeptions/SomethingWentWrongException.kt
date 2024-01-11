@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.exeptions
+package com.tabarkevych.places_app.domain.exeptions
 
 import java.lang.Exception
 

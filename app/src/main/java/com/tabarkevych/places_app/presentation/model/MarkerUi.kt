@@ -6,5 +6,6 @@ data class MarkerUi(
     val longitude: String,
     val images: List<String>,
     val title:String,
-    val description:String
+    val description:String,
+    val isLoadIng:Boolean = false
 )

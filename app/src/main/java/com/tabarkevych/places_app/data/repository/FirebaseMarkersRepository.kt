@@ -17,7 +17,7 @@ import com.tabarkevych.places_app.domain.model.Marker
 import com.tabarkevych.places_app.domain.model.SaveMarker
 import com.tabarkevych.places_app.domain.repository.IAuthRepository
 import com.tabarkevych.places_app.domain.repository.IMarkersRepository
-import com.tabarkevych.places_app.extensions.executeSafeWithResult
+import com.tabarkevych.places_app.presentation.extensions.executeSafeWithResult
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

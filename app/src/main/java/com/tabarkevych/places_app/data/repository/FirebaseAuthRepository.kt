@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.tabarkevych.places_app.domain.model.UserInfo
 import com.tabarkevych.places_app.domain.repository.IAuthRepository
-import com.tabarkevych.places_app.extensions.executeSafeWithResult
+import com.tabarkevych.places_app.presentation.extensions.executeSafeWithResult
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking

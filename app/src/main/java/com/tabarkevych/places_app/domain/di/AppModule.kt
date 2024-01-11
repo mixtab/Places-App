@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.di
+package com.tabarkevych.places_app.domain.di
 
 import dagger.Module
 import dagger.hilt.InstallIn

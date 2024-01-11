@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.tabarkevych.places_app.presentation.DevicePreviews
+import com.tabarkevych.places_app.presentation.theme.Mirage
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
 
 
@@ -67,7 +69,10 @@ fun PlacesAppSearchTextField(
                 disabledTextColor = Color.Black,
                 containerColor = Color.White,
                 unfocusedBorderColor = Color.White,
-                textColor = Color.Black
+                textColor = Mirage,
+                placeholderColor = Mirage,
+                disabledPlaceholderColor = Mirage,
+                cursorColor = Mirage
             )
         )
     }

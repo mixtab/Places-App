@@ -9,8 +9,8 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.tabarkevych.places_app.exeptions.LocationException
-import com.tabarkevych.places_app.extensions.hasLocationPermission
+import com.tabarkevych.places_app.domain.exeptions.LocationException
+import com.tabarkevych.places_app.presentation.extensions.hasLocationPermission
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking

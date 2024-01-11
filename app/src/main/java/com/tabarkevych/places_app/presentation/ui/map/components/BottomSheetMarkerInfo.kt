@@ -3,7 +3,6 @@ package com.tabarkevych.places_app.presentation.ui.map.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,7 +15,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -30,19 +29,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.AsyncImage
+import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.R
 import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.model.MarkerUi
-import com.tabarkevych.places_app.presentation.theme.Mirage
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
+import com.tabarkevych.places_app.presentation.ui.base.components.ImagesPager
+import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryButton
 import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MapBottomSheetScaffold(
     scope: CoroutineScope,
     scaffoldState: BottomSheetScaffoldState,
     selectedMarker: State<MarkerUi?>,
+    onBuildRouteClick:(LatLng) -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val selectedImagePosition = remember { mutableStateOf<Int?>(null) }
@@ -51,6 +53,7 @@ fun MapBottomSheetScaffold(
     BottomSheetScaffold(
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
+        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetContent = {
             selectedMarker.value?.let { markerUi ->
                 if (selectedImagePosition.value != null) {
@@ -61,12 +64,12 @@ fun MapBottomSheetScaffold(
                     )
                 }
                 Column {
-                    LazyRow(modifier = Modifier.height(200.dp)) {
+                    LazyRow(modifier = Modifier.height(150.dp)) {
                         items(items = markerUi.images, key = { it }) {
                             AsyncImage(
                                 model = it,
                                 modifier = Modifier
-                                    .height(250.dp)
+                                    .height(150.dp)
                                     .padding(20.dp)
                                     .fillMaxWidth()
                                     .clickable {
@@ -85,27 +88,29 @@ fun MapBottomSheetScaffold(
                     Divider(color = Color.LightGray)
 
                     Text(
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp),
                         text = "Title: ${markerUi.title}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Mirage
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp),
                         text = "Description: ${markerUi.description}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Mirage
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        modifier = Modifier.padding(10.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp),
                         text = "LatLng: ${markerUi.latitude} , ${markerUi.longitude}",
                         fontSize = 16.sp,
-                        color = Mirage
+                        color = MaterialTheme.colorScheme.primary
                     )
+
+                    PrimaryButton( modifier = Modifier.padding(10.dp).fillMaxWidth(),"Build route"){
+                        onBuildRouteClick.invoke(LatLng(markerUi.latitude.toDouble(),markerUi.longitude.toDouble()))
+                    }
                 }
             }
         },
@@ -124,7 +129,9 @@ private fun BottomSheetMarkerInfoPreview() {
         MapBottomSheetScaffold(
             rememberCoroutineScope(),
             rememberBottomSheetScaffoldState(),
-            remember { mutableStateOf<MarkerUi?>(null) }
+
+            remember { mutableStateOf<MarkerUi?>(null) },
+            {}
         ) {
 
         }

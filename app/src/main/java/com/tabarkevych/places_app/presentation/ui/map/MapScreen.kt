@@ -6,17 +6,26 @@ import android.location.Location
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,16 +36,23 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.maps.model.LatLng
+import com.tabarkevych.places_app.R
 import com.tabarkevych.places_app.domain.model.RouteInfo
-import com.tabarkevych.places_app.extensions.activityViewModel
+import com.tabarkevych.places_app.presentation.extensions.activityViewModel
 import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.model.MarkerUi
 import com.tabarkevych.places_app.presentation.navigation.NavRouteDestination
@@ -84,6 +100,9 @@ internal fun MapScreenRoute(
         },
         onDismissRoute = {
             viewModel.removeRoute()
+        },
+        onBuildRouteClick = {
+            viewModel.createRouteToLocation(it)
         }
     )
 
@@ -103,6 +122,7 @@ internal fun MapScreen(
     onGetUserLocation: () -> Unit,
     onAddMarker: (LatLng, List<Uri>?, String, String) -> Unit,
     onDismissRoute: () -> Unit,
+    onBuildRouteClick:(LatLng) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -138,17 +158,63 @@ internal fun MapScreen(
             val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
             ModalNavigationDrawer(
                 drawerContent = {
-                    ModalDrawerSheet {
-                        MapNavigationDrawerItems.values().forEach {
+                    ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.onSurface) {
+
+
+                        Row(Modifier.padding(top = 10.dp, bottom = 10.dp)) {
+                            Image(
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(horizontal = 8.dp)
+                                    .align(Alignment.CenterVertically),
+                                painter = painterResource(id = R.drawable.ic_app_logo_foreground),
+                                contentScale = ContentScale.Crop,
+                                contentDescription = ""
+                            )
+                            Text(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                text = stringResource(id = R.string.app_name),
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                        }
+                        Divider(color = MaterialTheme.colorScheme.primary, thickness = 0.5.dp)
+
+                        MapNavigationDrawerItems.entries.forEach {
                             NavigationDrawerItem(
-                                label = { Text(text = stringResource(id = it.title)) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = it.title),
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                },
                                 selected = false,
                                 onClick = {
                                     scope.launch {
                                         drawerState.close()
                                         navController.navigate(it.route)
                                     }
-                                })
+                                },
+                                colors = NavigationDrawerItemDefaults.colors(
+                                    unselectedContainerColor = MaterialTheme.colorScheme.onSurface
+                                ),
+                                icon = {
+                                    if (it == MapNavigationDrawerItems.SETTINGS) {
+                                        Icon(
+                                            imageVector = Icons.Default.Settings,
+                                            contentDescription = ""
+                                        )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(id = it.icon),
+                                            contentDescription = ""
+                                        )
+                                    }
+                                }
+                            )
                         }
                     }
 
@@ -160,7 +226,11 @@ internal fun MapScreen(
                 MapBottomSheetScaffold(
                     scope,
                     bottomSheetState,
-                    selectedMarker
+                    selectedMarker,
+                    onBuildRouteClick = {
+                        selectedMarker.value = null
+                        onBuildRouteClick.invoke(it)
+                    }
                 ) {
                     Scaffold {
                         it.calculateBottomPadding()
@@ -178,7 +248,6 @@ internal fun MapScreen(
                                     selectedMarker.value = it
                                     bottomSheetState.bottomSheetState.expand()
                                 }
-                                /*  navController.navigate(NavRouteDestination.MarkerDetailsScreen.route + "/${it}")*/
                             },
                             onDismissRoute = { onDismissRoute.invoke() }
                         )
@@ -192,7 +261,7 @@ internal fun MapScreen(
                                 }
                             },
                             onFieldClick = {
-                                navController.navigate(NavRouteDestination.SearchScreen.route)
+                                navController.navigate(NavRouteDestination.Search.route)
                             }
                         )
                     }
@@ -229,6 +298,6 @@ private fun LoadingPlaceHolderPreview() {
             {},
             {},
             { _, _, _, _ -> },
-            {})
+            {},{})
     }
 }

@@ -2,6 +2,7 @@ package com.tabarkevych.places_app.presentation.ui.base.components
 
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +21,7 @@ fun PrimaryFloatingActionButton(
 ) {
     FloatingActionButton(
         modifier = modifier,
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.onTertiary,
         contentColor = Mirage,
         onClick = {
             onClick()

@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.extensions
+package com.tabarkevych.places_app.presentation.extensions
 
 import android.util.Log
 import com.tabarkevych.places_app.BuildConfig

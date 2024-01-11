@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.domain.base.orError
 import com.tabarkevych.places_app.domain.base.whenSuccess
 import com.tabarkevych.places_app.domain.manager.location.DeviceLocationManager
-import com.tabarkevych.places_app.domain.manager.routing.RoutingManager
+import com.tabarkevych.places_app.domain.manager.places.PlacesManager
 import com.tabarkevych.places_app.domain.model.RouteInfo
 import com.tabarkevych.places_app.domain.repository.IAuthRepository
 import com.tabarkevych.places_app.domain.repository.IMarkersRepository
@@ -32,7 +32,7 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     private val locationManager: DeviceLocationManager,
     private val markersRepository: IMarkersRepository,
-    private val routingManager: RoutingManager,
+    private val routingManager: PlacesManager,
     authRepository: IAuthRepository
 ) : ViewModel() {
 
@@ -82,11 +82,24 @@ class MapViewModel @Inject constructor(
 
     fun addMarker(latLng: LatLng?, images: List<Uri>?, title: String, description: String) {
         viewModelScope.launch {
-            _showLoadingState.emit(true)
             if (latLng == null || images == null) return@launch
+            val timeCreated = System.currentTimeMillis()
+            val newMarkers = markersState.value.toMutableList()
+            newMarkers.add(
+                MarkerUi(
+                    timeCreated,
+                    latitude = latLng.latitude.toString(),
+                    longitude = latLng.longitude.toString(),
+                    images = images.map { it.toString() },
+                    title,
+                    description,
+                    isLoadIng = true
+                )
+            )
+            markersState.value = newMarkers
 
             markersRepository.uploadImageWithMarker(
-                System.currentTimeMillis(),
+                timeCreated,
                 images,
                 latLng,
                 title,
@@ -117,7 +130,7 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    fun zoomToPlaceAction(place:LatLng){
+    fun zoomToPlaceAction(place: LatLng) {
         viewModelScope.launch {
             _zoomToPlaceEvent.emit(place)
             delay(1000)

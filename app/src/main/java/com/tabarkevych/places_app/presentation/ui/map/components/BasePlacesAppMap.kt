@@ -2,6 +2,7 @@ package com.tabarkevych.places_app.presentation.ui.map.components
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Resources.Theme
 import android.location.Location
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,9 +30,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.createBitmap
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
@@ -40,8 +44,9 @@ import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.tabarkevych.places_app.R
 import com.tabarkevych.places_app.domain.model.RouteInfo
-import com.tabarkevych.places_app.extensions.toLatLang
+import com.tabarkevych.places_app.presentation.extensions.toLatLang
 import com.tabarkevych.places_app.presentation.DevicePreviews
+import com.tabarkevych.places_app.presentation.extensions.bitmapDescriptor
 import com.tabarkevych.places_app.presentation.model.MarkerUi
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
 import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryButton
@@ -98,11 +103,14 @@ fun BasePlacesAppMap(
                             marker.latitude.toDouble(), marker.longitude.toDouble()
                         )
                     ),
+                    icon = context.bitmapDescriptor(
+                        if (marker.isLoadIng) R.drawable.ic_marker_inactive else R.drawable.ic_marker_active
+                    ),
                     title = marker.title,
+
                     snippet = marker.description,
                     onClick = {
                         onMarkerClick.invoke(marker)
-                        //navController.navigate(NavRouteDestination.MarkerDetailsScreen.route + "/${marker.timestamp}")
                         true
                     }
                 )
@@ -112,6 +120,17 @@ fun BasePlacesAppMap(
                 Polyline(
                     points = routeInfo.routePoints, color = Color.Blue
                 )
+                scope.launch {
+                    val bounds = LatLngBounds.Builder()
+                        .include(routeInfo.routePoints.first())
+                        .include(routeInfo.routePoints.last())
+                        .build()
+                    cameraPositionState.animate(
+                        update = CameraUpdateFactory.newLatLngBounds(
+                            bounds, 200
+                        ), durationMs = 1000
+                    )
+                }
             }
 
 
@@ -159,31 +178,34 @@ fun BasePlacesAppMap(
                     .padding(10.dp)
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.align(Alignment.CenterStart)) {
                         Text(
                             modifier = Modifier.padding(10.dp),
-                            text = routeInfo.duration.humanReadable
+                            text = routeInfo.duration.humanReadable,
+                            color = MaterialTheme.colorScheme.primary
                         )
                         Text(
                             modifier = Modifier.padding(10.dp),
-                            text = routeInfo.distanceInMeters.humanReadable
+                            text = routeInfo.distanceInMeters.humanReadable,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                     Column(modifier = Modifier.align(Alignment.CenterEnd)) {
                         OutlinedButton(
                             modifier = Modifier
-                                .padding(10.dp).align(Alignment.End),
+                                .padding(top = 10.dp, end = 10.dp)
+                                .align(Alignment.End),
                             onClick = {
                                 onDismissRoute.invoke()
-                            }) {
-                            Text(text = "Dismiss")
+                            },) {
+                            Text(text = "Dismiss", color = MaterialTheme.colorScheme.primary)
                         }
                         PrimaryButton(
                             modifier = Modifier
-                                .padding(10.dp),
+                                .padding(bottom = 10.dp, end = 10.dp),
                             "Start Navigation"
                         ) {
                             val intent = Intent(

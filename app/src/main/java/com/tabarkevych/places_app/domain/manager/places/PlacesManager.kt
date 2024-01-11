@@ -1,11 +1,8 @@
-package com.tabarkevych.places_app.domain.manager.routing
+package com.tabarkevych.places_app.domain.manager.places
 
 import android.content.Context
-import android.util.Log
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
@@ -34,9 +31,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
-class RoutingManager @Inject constructor(
+class PlacesManager @Inject constructor(
     @ApplicationContext val context: Context
 ) {
 

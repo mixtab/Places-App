@@ -7,6 +7,7 @@ import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -18,8 +19,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.tabarkevych.places_app.presentation.DevicePreviews
-import com.tabarkevych.places_app.presentation.theme.BayLeaf
-import com.tabarkevych.places_app.presentation.theme.Mirage
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
 import com.tabarkevych.places_app.presentation.ui.base.BottomNavigationType
 
@@ -30,10 +29,10 @@ fun BottomBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
     val bottomBarDestination =
-        BottomNavigationType.values().any { it.route == currentDestination?.route }
+        BottomNavigationType.entries.any { it.route == currentDestination?.route }
     if (bottomBarDestination) {
-            BottomNavigation (backgroundColor = BayLeaf ){
-                BottomNavigationType.values().forEach { screen ->
+            BottomNavigation (backgroundColor = MaterialTheme.colorScheme.onPrimary ){
+                BottomNavigationType.entries.forEach { screen ->
                     AddItem(
                         screen = screen,
                         currentDestination = currentDestination,
@@ -52,17 +51,18 @@ fun RowScope.AddItem(
 ) {
     BottomNavigationItem(
         label = {
-            Text(text = stringResource(id = screen.title))
+            Text(text = stringResource(id = screen.title),color = MaterialTheme.colorScheme.onSecondary)
         },
         icon = {
             Icon(
                 imageVector = ImageVector.vectorResource(id = screen.icon),
-                contentDescription = "Navigation Icon"
+                contentDescription = "Navigation Icon",
+                tint = MaterialTheme.colorScheme.onSecondary
             )
         },
         selected = currentDestination?.route == screen.route,
-        selectedContentColor = Mirage,
-        unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+        selectedContentColor =  MaterialTheme.colorScheme.onSecondary,
+        unselectedContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.1f),
         onClick = {
             if (navController.currentDestination?.route != screen.route) {
                 navController.navigate(screen.route) {

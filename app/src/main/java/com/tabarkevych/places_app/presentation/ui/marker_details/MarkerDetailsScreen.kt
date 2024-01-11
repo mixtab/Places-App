@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -38,7 +39,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.R
-import com.tabarkevych.places_app.extensions.activityViewModel
+import com.tabarkevych.places_app.presentation.extensions.activityViewModel
 import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.navigation.NavRouteDestination
 import com.tabarkevych.places_app.presentation.theme.Mirage
@@ -46,7 +47,7 @@ import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
 import com.tabarkevych.places_app.presentation.theme.Salomie
 import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryButton
 import com.tabarkevych.places_app.presentation.ui.map.MapViewModel
-import com.tabarkevych.places_app.presentation.ui.map.components.ImagesPager
+import com.tabarkevych.places_app.presentation.ui.base.components.ImagesPager
 import com.tabarkevych.places_app.presentation.ui.marker_details.components.MarkerDetailsScreenEditInfo
 import com.tabarkevych.places_app.presentation.ui.marker_details.components.MarkerDetailsScreenToolBar
 import kotlinx.coroutines.flow.collectLatest
@@ -127,7 +128,7 @@ fun MarkerDetailsScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Salomie)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             val list = newImagesUriState.value?.map { it.toString() }?:imagesState.value
@@ -181,27 +182,27 @@ fun MarkerDetailsScreen(
                     text =  "Title: ${titleState.value}",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Mirage
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text( modifier = Modifier.padding(10.dp),
                     text = "Description: ${descriptionState.value}",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Mirage
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text( modifier = Modifier.padding(10.dp),
                     text = "LatLng: ${latitudeState.value} , ${longitudeState.value}",
                     fontSize = 16.sp,
-                    color = Mirage
+                    color = MaterialTheme.colorScheme.primary
                 )
                 PrimaryButton(
                     modifier = Modifier.fillMaxWidth().padding(10.dp),
                     text = stringResource(id = R.string.marker_details_build_route),
                 ) {
                     onBuildRouteClick.invoke(latitudeState.value.toDouble(),longitudeState.value.toDouble())
-                    navController.popBackStack(NavRouteDestination.MapScreen.route,false)
+                    navController.popBackStack(NavRouteDestination.Map.route,false)
                 }
 
             }

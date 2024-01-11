@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +30,7 @@ fun LoadingPlaceHolder() {
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(50.dp),
-            color = Salomie,
+            color = MaterialTheme.colorScheme.tertiary,
             strokeWidth = 4.dp
         )
     }

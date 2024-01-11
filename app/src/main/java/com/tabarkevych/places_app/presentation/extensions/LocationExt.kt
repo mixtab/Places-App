@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.extensions
+package com.tabarkevych.places_app.presentation.extensions
 
 import android.location.Location
 import com.google.android.gms.maps.model.LatLng

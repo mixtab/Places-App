@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.presentation.ui.map.components
+package com.tabarkevych.places_app.presentation.ui.base.components
 
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -36,6 +36,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import com.tabarkevych.places_app.R
 import com.tabarkevych.places_app.presentation.DevicePreviews
+import com.tabarkevych.places_app.presentation.theme.Gray
 import com.tabarkevych.places_app.presentation.theme.PlacesAppTheme
 
 
@@ -58,7 +59,7 @@ fun ImagesPager(
             Surface(modifier = Modifier.fillMaxSize()) {
 
                 HorizontalPager(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().background(Gray),
                     state = pagerState,
                     key = { it }) {
                     AsyncImage(

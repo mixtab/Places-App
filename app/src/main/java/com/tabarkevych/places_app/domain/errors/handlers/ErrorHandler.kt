@@ -1,7 +1,7 @@
 package com.tabarkevych.places_app.domain.errors.handlers
 
-import com.tabarkevych.places_app.exeptions.NetworkHttpException
-import com.tabarkevych.places_app.exeptions.SomethingWentWrongException
+import com.tabarkevych.places_app.domain.exeptions.NetworkHttpException
+import com.tabarkevych.places_app.domain.exeptions.SomethingWentWrongException
 import java.net.UnknownHostException
 import com.tabarkevych.places_app.domain.errors.Error
 

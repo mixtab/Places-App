@@ -27,7 +27,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.R
-import com.tabarkevych.places_app.extensions.activityViewModel
+import com.tabarkevych.places_app.presentation.extensions.activityViewModel
 import com.tabarkevych.places_app.presentation.DevicePreviews
 import com.tabarkevych.places_app.presentation.model.MarkerUi
 import com.tabarkevych.places_app.presentation.navigation.NavRouteDestination
@@ -40,6 +40,8 @@ import com.tabarkevych.places_app.presentation.ui.markers_list.components.Marker
 import com.tabarkevych.places_app.presentation.ui.base.components.LoadingPlaceHolder
 import com.tabarkevych.places_app.presentation.ui.base.components.PrimaryFloatingActionButton
 import com.tabarkevych.places_app.presentation.ui.map.MapViewModel
+import com.tabarkevych.places_app.presentation.ui.settings.BackgroundColorType
+import com.tabarkevych.places_app.presentation.ui.settings.TextColorType
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
@@ -56,6 +58,10 @@ fun MarkersListScreenRoute(
 
     val isUserSignIn = viewModel.isUserSignInState.collectAsStateWithLifecycle(false)
 
+    val bgColorState = viewModel.markersListBackgroundColor.collectAsStateWithLifecycle()
+
+    val textColorState = viewModel.markersListTextColor.collectAsStateWithLifecycle()
+
     MarkersListScreen(
         markers,
         markerPreviewState,
@@ -69,7 +75,9 @@ fun MarkersListScreenRoute(
         },
         onBuildRouteClick = {
             mapViewModel.createRouteToLocation(it)
-        }
+        },
+        bgColorState,
+        textColorState
     )
 }
 
@@ -82,13 +90,15 @@ fun MarkersListScreen(
     navController: NavController,
     onSignInClick: () -> Unit,
     onUpdatePreviewClick: () -> Unit,
-    onBuildRouteClick: (LatLng) -> Unit
+    onBuildRouteClick: (LatLng) -> Unit,
+    bgColorState: State<Color>,
+    textColorState: State<Color>
 ) {
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Salomie)
+            .background(bgColorState.value)
     ) {
         if (!isUserSignIn.value) {
             MarkersListSignIn(
@@ -121,26 +131,27 @@ fun MarkersListScreen(
                                 when (markerPreviewState.value) {
                                     MarkersListViewModel.MarkerPreview.SmallPreview -> MarkersListScreenLargeMarkerCard(
                                         it,
+                                        textColorState,
                                         onMarkerClick = {
-                                            navController.navigate(NavRouteDestination.MarkerDetailsScreen.route + "/${marker.timestamp}")
+                                            navController.navigate(NavRouteDestination.MarkerDetails.route + "/${marker.timestamp}")
                                         },
                                         onBuildRouteCLick = {
                                             onBuildRouteClick.invoke(it)
                                             navController.popBackStack(
-                                                NavRouteDestination.MapScreen.route,
+                                                NavRouteDestination.Map.route,
                                                 false
                                             )
                                         }
                                     )
 
-                                    else -> MarkersListScreenMarkerCard(it,
+                                    else -> MarkersListScreenMarkerCard(it, textColorState,
                                         onMarkerClick = {
-                                            navController.navigate(NavRouteDestination.MarkerDetailsScreen.route + "/${marker.timestamp}")
+                                            navController.navigate(NavRouteDestination.MarkerDetails.route + "/${marker.timestamp}")
                                         },
                                         onBuildRouteCLick = {
                                             onBuildRouteClick.invoke(it)
                                             navController.popBackStack(
-                                                NavRouteDestination.MapScreen.route,
+                                                NavRouteDestination.Map.route,
                                                 false
                                             )
                                         })
@@ -187,7 +198,13 @@ private fun LoadingPlaceHolderPreview() {
             rememberNavController(),
             {},
             {},
-            {}
+            {},
+            remember {
+                mutableStateOf(Color(BackgroundColorType.SALOMIE.color))
+            },
+            remember {
+                mutableStateOf(Color(TextColorType.MIRAGE.color))
+            }
         )
     }
 }

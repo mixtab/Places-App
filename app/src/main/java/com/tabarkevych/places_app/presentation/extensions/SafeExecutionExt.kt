@@ -1,4 +1,4 @@
-package com.tabarkevych.places_app.extensions
+package com.tabarkevych.places_app.presentation.extensions
 
 import com.tabarkevych.places_app.domain.errors.handlers.ErrorHandler
 import com.tabarkevych.places_app.domain.errors.handlers.IErrorHandler

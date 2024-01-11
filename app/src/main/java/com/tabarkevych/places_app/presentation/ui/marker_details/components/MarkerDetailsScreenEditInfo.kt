@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -40,7 +41,7 @@ fun MarkerDetailsScreenEditInfo(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Salomie)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(30.dp))
@@ -50,9 +51,13 @@ fun MarkerDetailsScreenEditInfo(
                     .padding(10.dp),
                 value = titleState.value,
                 onValueChange = { titleState.value = it },
-                label = { Text("*Title", color = Color.Black) },
-                textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                colors = TextFieldDefaults.outlinedTextFieldColors(),
+                label = { Text("*Title", color = MaterialTheme.colorScheme.primary) },
+                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                ),
                 maxLines = 1
             )
             OutlinedTextField(
@@ -61,9 +66,13 @@ fun MarkerDetailsScreenEditInfo(
                     .padding(10.dp),
                 value = descriptionState.value,
                 onValueChange = { descriptionState.value = it },
-                label = { Text("*Description", color = Color.Black) },
-                textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                colors = TextFieldDefaults.outlinedTextFieldColors(),
+                label = { Text("*Description", color = MaterialTheme.colorScheme.primary) },
+                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                ),
                 maxLines = 1
             )
             OutlinedTextField(
@@ -72,9 +81,13 @@ fun MarkerDetailsScreenEditInfo(
                     .padding(10.dp),
                 value = latitudeState.value,
                 onValueChange = { latitudeState.value = it },
-                label = { Text("*Latitude", color = Color.Black) },
-                textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                colors = TextFieldDefaults.outlinedTextFieldColors(),
+                label = { Text("*Latitude",color = MaterialTheme.colorScheme.primary) },
+                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                ),
                 maxLines = 1
             )
             OutlinedTextField(
@@ -83,15 +96,24 @@ fun MarkerDetailsScreenEditInfo(
                     .padding(10.dp),
                 value = longitudeState.value,
                 onValueChange = { longitudeState.value = it },
-                label = { Text("*Longitude", color = Color.Black) },
-                textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                colors = TextFieldDefaults.outlinedTextFieldColors(),
+                label = { Text("*Longitude", color = MaterialTheme.colorScheme.primary) },
+                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary
+                ),
                 maxLines = 1
             )
+            val showLoading = remember { mutableStateOf(false) }
             PrimaryButton(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
-                text = stringResource(id = R.string.label_done)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                text = stringResource(id = R.string.label_done),
+                showLoading
             ) {
+                showLoading.value = true
                 onUpdateMarker()
             }
         }

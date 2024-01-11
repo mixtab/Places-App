@@ -5,12 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.tabarkevych.places_app.domain.base.whenSuccess
 import com.tabarkevych.places_app.domain.manager.location.DeviceLocationManager
-import com.tabarkevych.places_app.domain.manager.routing.RoutingManager
+import com.tabarkevych.places_app.domain.model.SearchHistory
 import com.tabarkevych.places_app.domain.model.SearchResult
+import com.tabarkevych.places_app.domain.repository.ISearchRepository
+import com.tabarkevych.places_app.domain.use_case.search.FetchResultPlaceInfoUseCase
+import com.tabarkevych.places_app.domain.use_case.search.FetchPlacesResultsByTextUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -18,7 +22,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val routingManager: RoutingManager,
+    private val fetchPlacesResultsByTextUseCase: FetchPlacesResultsByTextUseCase,
+    private val fetchPlaceByIdUseCase: FetchResultPlaceInfoUseCase,
+    private val searchRepository: ISearchRepository,
     private val locationManager: DeviceLocationManager
 ) : ViewModel() {
 
@@ -31,16 +37,23 @@ class SearchViewModel @Inject constructor(
 
 
     init {
-        // fetchSearchHistory
+        viewModelScope.launch {
+            searchRepository.getSearchHistory().collectLatest {
+                _searchUiState.emit(_searchUiState.value.copy(searchHistory = it))
+            }
+
+        }
     }
 
     fun fetchSearchResults(searchValue: String) {
         viewModelScope.launch {
-            routingManager.fetchPlacesByText(
-                searchValue,
-                LatLng(
-                    locationManager.getLocationUpdates().first().latitude,
-                    locationManager.getLocationUpdates().first().longitude
+            fetchPlacesResultsByTextUseCase.execute(
+                FetchPlacesResultsByTextUseCase.Params(
+                    searchValue,
+                    LatLng(
+                        locationManager.getLocationUpdates().first().latitude,
+                        locationManager.getLocationUpdates().first().longitude
+                    )
                 )
             ).firstOrNull()?.let {
                 it.whenSuccess {
@@ -50,16 +63,23 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun fetchPlaceDetails(id: String) {
+    fun fetchPlaceDetails(item: SearchResult) {
         viewModelScope.launch {
-            routingManager.fetchPlaceInfoById(id).firstOrNull()?.whenSuccess {
-                _showSearchResultOnMapEvent.emit(this)
-            }
+            fetchPlaceByIdUseCase.execute(FetchResultPlaceInfoUseCase.Params(item)).firstOrNull()
+                ?.whenSuccess {
+                    _showSearchResultOnMapEvent.emit(this)
+                }
+        }
+    }
+
+    fun removeSearchHistory() {
+        viewModelScope.launch {
+            searchRepository.removeSearchHistory()
         }
     }
 
     data class SearchUiState(
-        val searchHistory: List<String> = listOf(),
+        val searchHistory: List<SearchHistory> = listOf(),
         val searchResults: List<SearchResult> = listOf()
     )
 }
