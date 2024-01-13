@@ -1,25 +1,52 @@
 ## Description
 
-This repository contains application implementation using Compose, MVVM, Clean Architecture, Hilt, Firebase Realtime Database, Firebase Authentication
+This repository contains application implementation using:
+ - Compose
+ - MVVM
+ - Clean Architecture
+ - Hilt
+ - Firebase Authentication
+ - Firebase Realtime Database
+ - Room
+ - Preferences DataStore
+ - Places API (NEW)
+ - Material 3
 
 
 
 ## To run it
 
 1. Get a [Maps API key][api-key]
-2. Create a file in the root directory named `local.properties` with a single line that looks like this, replacing YOUR_KEY with the key from step 1: `GOOGLE_API_KEY=YOUR_KEY`
-3. Build and run
+2. Create a file in the root directory named `local.properties` with a single line that looks like this, replacing YOUR_KEY with the key from step 1: ` GOOGLE_API_KEY=YOUR_KEY `
+3. Get 'debug.keystore.jks' and place it in the main package (This is required for FirebaseAuthorization to work correctly)
+4. Build and run
 
 
 
 ## Functionality
 
-Main Screen contains Google Map and "Current Location" button.
-By clicking on "Current Location" moves the map to the user's location.
-A long press on the map shows Firebase Authentication. After successful authorization, a new screen is displayed where the user can add a picture, name, description and save the location.
+Main Screen contains Google Map, search field and Navigation Drawer.
+
+A long press on the map shows Firebase Authentication.
+After successful authorization, a new screen is displayed where the user can add a picture, name, description and save the location.
 The saved locations are then displayed on the map by placing markers on the corresponding locations.
-If user clicks on marker it redirect him to screen with details for this location. These details can be edited and updated. Also selected location can be deleted.
-This data is stored in the Firebase Realtime database.
-The program contains a screen where all the saved places are shown in the form of a list.
+If user clicks on marker, it shows photos and detail information about this location, with possibility to build route.
+The user can view the photos in full screen by clicking on it.
+
+Markers data is stored in the Firebase Realtime database.
+
+The app contains a screen where all the saved places are shown in the form of a list.
 The user has the option to change the appearance of this list by clicking the button in the lower left corner
 List screen have pagination with 10 items per page.
+After clicking on an item in this list, the user is redirected to the "Details" screen. These details can be edited and updated. Also selected location can be deleted.
+
+On map screen when user click on search field, it redirect user to a "Search" screen.
+On "Search" screen there is an input field that looks exactly like on previous screen.
+By typing in this screen user can see s list of addresses from google places.
+After clicking on one of these places, it is added to the search history, after which the user is redirected to this place on the map.
+
+By clicking on the navigation drawer, the user can go to the "Markers List" and "Settings".
+On the "Settings" screen, the user able to select the color of the text and the color of the background
+that will be used on the "Markers List" screen and enable or disable DARK-mode
+
+
