@@ -36,7 +36,8 @@ class FirebaseMarkersRepository @Inject constructor(
     override fun getAllMarkers(): Flow<Result<List<Marker>>> {
         return callbackFlow {
             val userId = authRepository.getUserId().toString()
-            val queryProductNames = fireDatabase.child(userId).child(CHILD_MARKERS).orderByKey()
+            val queryProductNames =
+                fireDatabase.child(CHILD_USERS).child(userId).child(CHILD_MARKERS).orderByKey()
 
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -74,7 +75,8 @@ class FirebaseMarkersRepository @Inject constructor(
 
     override suspend fun getMarkerById(markerId: Long): Flow<Marker> {
         val userId = authRepository.getUserId().toString()
-        val marker = fireDatabase.child(userId).child(CHILD_MARKERS).child(markerId.toString())
+        val marker = fireDatabase.child(CHILD_USERS).child(userId).child(CHILD_MARKERS)
+            .child(markerId.toString())
         return callbackFlow {
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -96,7 +98,8 @@ class FirebaseMarkersRepository @Inject constructor(
 
     override suspend fun addMarker(marker: Marker) {
         val userId = authRepository.getUserId().toString()
-        fireDatabase.child(userId).child(CHILD_MARKERS).child(marker.timestamp.toString())
+        fireDatabase.child(CHILD_USERS).child(userId).child(CHILD_MARKERS)
+            .child(marker.timestamp.toString())
             .setValue(
                 SaveMarker(
                     marker.timestamp,
@@ -108,7 +111,8 @@ class FirebaseMarkersRepository @Inject constructor(
             )
 
 
-        fireDatabase.child(userId).child(CHILD_MARKERS).child(marker.timestamp.toString())
+        fireDatabase.child(CHILD_USERS).child(userId).child(CHILD_MARKERS)
+            .child(marker.timestamp.toString())
             .child(CHILD_MARKERS_PHOTOS).setValue(marker.images)
 
     }
@@ -116,10 +120,11 @@ class FirebaseMarkersRepository @Inject constructor(
 
     override suspend fun deleteMarker(markerId: Long) {
         val userId = authRepository.getUserId().toString()
-        fireDatabase.child(userId).child(CHILD_MARKERS).child(markerId.toString()).removeValue()
+        fireDatabase.child(CHILD_USERS).child(userId).child(CHILD_MARKERS)
+            .child(markerId.toString()).removeValue()
 
         val storageRef =
-            fireStorage.getReference(CHILD_MARKERS + "/" + authRepository.getUserId() + "/" + markerId)
+            fireStorage.getReference(CHILD_USERS + authRepository.getUserId() + "/" + "$CHILD_MARKERS/" + markerId)
         storageRef.listAll().addOnSuccessListener { listResult ->
             listResult.items.forEach { item ->
                 item.delete()
@@ -138,7 +143,8 @@ class FirebaseMarkersRepository @Inject constructor(
 
         imagesUri?.forEach { imageUri ->
             val imageRef =
-                fireStorage.getReference(CHILD_MARKERS + "/" + authRepository.getUserId() + "/" + timestamp + "/" + System.currentTimeMillis())
+                fireStorage.getReference(
+                    "$CHILD_USERS/" + authRepository.getUserId() + "/" + "$CHILD_MARKERS/" + "$timestamp/" + System.currentTimeMillis())
             imageRef.putFile(imageUri).await()
 
             imageRef.downloadUrl.addOnSuccessListener { uri ->
@@ -161,6 +167,7 @@ class FirebaseMarkersRepository @Inject constructor(
 
     companion object {
 
+        const val CHILD_USERS = "users"
         const val CHILD_MARKERS = "markers"
         const val CHILD_MARKERS_PHOTOS = "marker_photos"
     }
